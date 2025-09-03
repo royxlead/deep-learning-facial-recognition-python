@@ -1,7 +1,3 @@
-Here’s a polished and comprehensive `README.md` for your **Deep Learning Facial Recognition (Python)** repository, based on the information from your notebook and project description:
-
----
-
 # Deep Learning Facial Recognition (Python)
 
 An end-to-end **facial recognition system** built with a **Siamese neural network**. This project guides you from data collection through model training to real-time verification—all in a Jupyter notebook.
