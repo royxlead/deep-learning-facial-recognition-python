@@ -1,101 +1,106 @@
+<!-- Badges: update these if you add CI or a model release -->
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.8%2B-green.svg)](https://www.python.org/)
+
 # Deep Learning Facial Recognition (Python)
 
-An end-to-end **facial recognition system** built with a **Siamese neural network**. This project guides you from data collection through model training to real-time verification—all in a Jupyter notebook.
+A compact, educational demo that implements facial verification using a Siamese neural network. The main workflow is provided as a Jupyter notebook (`deep_learning_facial_recognition.ipynb`) that walks through image collection, preprocessing, model training, and a simple verification routine using OpenCV.
 
-## Overview
+This repository is intended for learning and experimentation only. It demonstrates concepts (pairwise learning, L1 distance layer, webcam capture) and is not intended as a production-ready facial recognition system.
 
-This repository implements facial recognition using a Siamese network, capable of learning the similarity between image pairs. It includes steps from capturing your own data to training and verifying identities using your webcam.
+## Quick links
+
+- Notebook: `deep_learning_facial_recognition.ipynb`
+- Example inference script: `predict.py`
+- Requirements: `requirements.txt`
 
 ## Features
 
-* **Image Collection** – Capture anchor, positive, and negative images via webcam for building training datasets. 
-* **Data Preprocessing** – Load, preprocess, and transform images for efficient model training. 
-* **Model Training** – Train a Siamese network using TensorFlow to learn distinguishing facial features. 
-* **Real-Time Verification** – Use OpenCV to recognize or verify faces captured from webcam in real time. 
+- Webcam-based image collection helpers (anchor / positive / negative)
+- Data preprocessing and dataset construction using TensorFlow
+- Compact Siamese architecture with a custom L1 distance layer
+- Training loop with checkpointing and a lightweight inference helper
 
-## Prerequisites
+## Quickstart (Windows PowerShell)
 
-Ensure you have the following Python libraries installed:
+1. Clone the repository and change into it:
 
-* `tensorflow`
-* `opencv-python`
-* `numpy`
-* `matplotlib`
+```powershell
+git clone https://github.com/royxlead/deep-learning-facial-recognition-python.git
+cd deep-learning-facial-recognition-python
+```
 
-You can install them with:
+2. Create and activate a virtual environment, then install dependencies:
 
-````bash
-pip install tensorflow opencv-python numpy matplotlib
-``` :contentReference[oaicite:4]{index=4}
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
 
-##  Setup & Usage
+3. (Optional) Create example directories the notebook expects:
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/royxlead/deep-learning-facial-recognition-python.git
-   cd deep-learning-facial-recognition-python
-````
+```powershell
+python -c "import os; [os.makedirs(p, exist_ok=True) for p in ['data/anchor','data/positive','data/negative','application_data/input_image','application_data/verification_images']]"
+```
 
-2. **Prepare directories:**
+4. Start Jupyter and open the notebook:
 
-   Make sure you have these directories in place:
+```powershell
+jupyter notebook deep_learning_facial_recognition.ipynb
+```
 
-   ```
-   ├── data/
-   │   ├── anchor/
-   │   ├── positive/
-   │   └── negative/
-   └── application_data/
-       ├── input_image/
-       └── verification_images/
-   ```
+Run the top-of-notebook setup cell first (it checks the environment, GPU availability, and sets seeds), then run cells in order.
 
-   * `data/` holds training examples (anchor, positive, negative).
-   * `application_data/` is for images used during real-time verification. 
+## Running inference (example)
 
-3. **Run the Jupyter Notebook:**
+After training and saving a model (the notebook saves `siamese_model.keras` by default), you can run the provided `predict.py` script:
 
-   Launch the notebook:
+```powershell
+python predict.py --input application_data/input_image/input_image.jpg --verification_dir application_data/verification_images --model siamese_model.keras --threshold 0.5
+```
 
-   ```bash
-   jupyter notebook deep_learning_facial_recognition.ipynb
-   ```
+The script prints per-image similarity scores and a final verification ratio.
 
-   Follow each cell: collect images, train the model, and test verification. 
-
-4. **Interact via Webcam:**
-
-   * Press `a` to save an **anchor** image.
-   * Press `p` to save a **positive** image.
-   * Press `q` to exit image collection mode.
-   * Press `v` to capture a **verification** image during inference. 
-
-## Notes
-
-* Balance your collected samples across anchor, positive, and negative sets for better training results.
-* Paths or directory names in your notebook may need adjusting based on your local setup. 
-
-## Project Structure
+## Project layout
 
 ```
 deep-learning-facial-recognition-python/
-├── deep_learning_facial_recognition.ipynb  # Main project notebook
-├── data/
-│   ├── anchor/
-│   ├── positive/
-│   └── negative/
-├── application_data/
-│   ├── input_image/
-│   └── verification_images/
-├── README.md
-└── LICENSE
+├── deep_learning_facial_recognition.ipynb   # Notebook (main workflow)
+├── predict.py                               # Minimal inference wrapper
+├── requirements.txt                          # Pinned dependency list
+├── .gitignore
+├── data/                                     # training data (anchor/positive/negative) - NOT committed
+└── application_data/                         # input/verification images - NOT committed
 ```
+
+## Notes & recommendations
+
+- The notebook contains simplified preprocessing and a small model for educational use. For better results consider:
+	- performing face alignment and cropping using a robust face detector
+	- increasing dataset size and variety
+	- replacing the toy embedding network with a pretrained backbone (MobileNet/ResNet) and fine-tuning
+
+- Security & privacy: collecting and using face images has legal and ethical implications. Only use images you have permission to use and follow local laws and best practices.
+
+## Contributing
+
+Contributions and improvements are welcome. Suggested small first PRs:
+
+- add a GitHub Actions workflow that runs a quick smoke test on `predict.py` (use CPU-only TensorFlow and small sample images)
+- parameterize notebook paths and hyperparameters for non-interactive runs
+- add an example dataset or scripts to download a small public sample
+
+When opening PRs, include a short description and a smoke-test showing the change works.
 
 ## License
 
-This project is licensed under the **MIT License**. 
+This project is licensed under the MIT License — see the `LICENSE` file for details.
 
-## Acknowledgments
+## Acknowledgements
 
-* **TensorFlow** – powering model training and neural network structure.
-* **OpenCV** – enabling webcam capture and real-time face processing. 
+- TensorFlow — model building and training
+- OpenCV — webcam capture and visualization
+
+---
+If you want, I can add a small sample image and a CI workflow that runs `predict.py` as a smoke test (CPU-only). Which would you prefer next?

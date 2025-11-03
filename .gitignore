@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtualenv
+.venv/
+env/
+venv/
+
+# Jupyter
+.ipynb_checkpoints
+
+# Data & artifacts
+data/
+application_data/
+*.keras
+*.h5
+training_checkpoints/
+
+# VSCode
+.vscode/
+
+# OS files
+Thumbs.db
+.DS_Store
