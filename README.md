@@ -1,106 +1,104 @@
-<!-- Badges: update these if you add CI or a model release -->
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.8%2B-green.svg)](https://www.python.org/)
+<div align="center">
 
-# Deep Learning Facial Recognition (Python)
+<img src="https://capsule-render.vercel.app/api?type=waving&color=6366f1&height=120&section=header&text=Facial%20Recognition&fontSize=38&fontColor=ffffff&fontAlignY=38&desc=Siamese%20Network%20for%20Face%20Verification&descAlignY=60&descSize=15&descColor=a5b4fc" width="100%"/>
 
-A compact, educational demo that implements facial verification using a Siamese neural network. The main workflow is provided as a Jupyter notebook (`deep_learning_facial_recognition.ipynb`) that walks through image collection, preprocessing, model training, and a simple verification routine using OpenCV.
+[![License: MIT](https://img.shields.io/badge/License-MIT-6366f1?style=flat-square)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)](https://pytorch.org)
+[![Architecture](https://img.shields.io/badge/Architecture-Siamese%20Network-14b8a6?style=flat-square)]()
 
-This repository is intended for learning and experimentation only. It demonstrates concepts (pairwise learning, L1 distance layer, webcam capture) and is not intended as a production-ready facial recognition system.
-
-## Quick links
-
-- Notebook: `deep_learning_facial_recognition.ipynb`
-- Example inference script: `predict.py`
-- Requirements: `requirements.txt`
-
-## Features
-
-- Webcam-based image collection helpers (anchor / positive / negative)
-- Data preprocessing and dataset construction using TensorFlow
-- Compact Siamese architecture with a custom L1 distance layer
-- Training loop with checkpointing and a lightweight inference helper
-
-## Quickstart (Windows PowerShell)
-
-1. Clone the repository and change into it:
-
-```powershell
-git clone https://github.com/royxlead/deep-learning-facial-recognition-python.git
-cd deep-learning-facial-recognition-python
-```
-
-2. Create and activate a virtual environment, then install dependencies:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-
-3. (Optional) Create example directories the notebook expects:
-
-```powershell
-python -c "import os; [os.makedirs(p, exist_ok=True) for p in ['data/anchor','data/positive','data/negative','application_data/input_image','application_data/verification_images']]"
-```
-
-4. Start Jupyter and open the notebook:
-
-```powershell
-jupyter notebook deep_learning_facial_recognition.ipynb
-```
-
-Run the top-of-notebook setup cell first (it checks the environment, GPU availability, and sets seeds), then run cells in order.
-
-## Running inference (example)
-
-After training and saving a model (the notebook saves `siamese_model.keras` by default), you can run the provided `predict.py` script:
-
-```powershell
-python predict.py --input application_data/input_image/input_image.jpg --verification_dir application_data/verification_images --model siamese_model.keras --threshold 0.5
-```
-
-The script prints per-image similarity scores and a final verification ratio.
-
-## Project layout
-
-```
-deep-learning-facial-recognition-python/
-├── deep_learning_facial_recognition.ipynb   # Notebook (main workflow)
-├── predict.py                               # Minimal inference wrapper
-├── requirements.txt                          # Pinned dependency list
-├── .gitignore
-├── data/                                     # training data (anchor/positive/negative) - NOT committed
-└── application_data/                         # input/verification images - NOT committed
-```
-
-## Notes & recommendations
-
-- The notebook contains simplified preprocessing and a small model for educational use. For better results consider:
-	- performing face alignment and cropping using a robust face detector
-	- increasing dataset size and variety
-	- replacing the toy embedding network with a pretrained backbone (MobileNet/ResNet) and fine-tuning
-
-- Security & privacy: collecting and using face images has legal and ethical implications. Only use images you have permission to use and follow local laws and best practices.
-
-## Contributing
-
-Contributions and improvements are welcome. Suggested small first PRs:
-
-- add a GitHub Actions workflow that runs a quick smoke test on `predict.py` (use CPU-only TensorFlow and small sample images)
-- parameterize notebook paths and hyperparameters for non-interactive runs
-- add an example dataset or scripts to download a small public sample
-
-When opening PRs, include a short description and a smoke-test showing the change works.
-
-## License
-
-This project is licensed under the MIT License — see the `LICENSE` file for details.
-
-## Acknowledgements
-
-- TensorFlow — model building and training
-- OpenCV — webcam capture and visualization
+</div>
 
 ---
-If you want, I can add a small sample image and a CI workflow that runs `predict.py` as a smoke test (CPU-only). Which would you prefer next?
+
+## Overview
+
+A deep learning face verification system built on a Siamese network architecture. Rather than classifying faces into fixed identity classes, the system learns a similarity metric in embedding space enabling verification of new identities without retraining.
+
+The pipeline covers the full lifecycle: data collection, preprocessing, Siamese network training, and real-time face verification.
+
+> *The key insight: face verification is a similarity problem, not a classification problem.*
+
+---
+
+## Architecture
+
+**Why Siamese Networks over standard classifiers?**
+
+A standard classifier requires retraining when new identities are added. A Siamese network learns a general similarity metric once trained, it can verify any two face images without modification. This makes it practical for real-world deployment where the identity set is dynamic.
+
+```
+Image A ──► CNN Encoder ──► Embedding A ──┐
+                                           ├──► Distance ──► Similar / Different
+Image B ──► CNN Encoder ──► Embedding B ──┘
+           (shared weights)
+```
+
+The two branches share identical weights, this is the defining property of the Siamese architecture. Training uses contrastive loss to pull embeddings of the same identity together and push different identities apart.
+
+---
+
+## Pipeline
+
+| Stage | Description |
+|---|---|
+| **Data Collection** | Face image dataset assembly and augmentation |
+| **Preprocessing** | Face detection, alignment, normalization |
+| **Training** | Siamese network with contrastive loss |
+| **Evaluation** | Verification accuracy, FAR/FRR metrics |
+| **Real-Time Inference** | Live face verification pipeline |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Deep Learning** | PyTorch |
+| **Architecture** | Siamese Network with shared CNN encoder |
+| **Loss Function** | Contrastive Loss |
+| **Computer Vision** | OpenCV |
+| **Language** | Python 3.10+ |
+
+---
+
+## Getting Started
+
+```bash
+git clone https://github.com/royxlead/deep-learning-facial-recognition-python.git
+cd deep-learning-facial-recognition-python
+
+pip install -r requirements.txt
+
+# Collect training data
+python collect_data.py
+
+# Train the Siamese network
+python train.py
+
+# Run real-time verification
+python verify.py
+```
+
+---
+
+## Research Context
+
+Siamese networks were introduced for signature verification and have since become a foundational architecture for one-shot learning and metric learning problems. This implementation applies the architecture to face verification, exploring the trade-off between embedding dimensionality, contrastive margin, and verification accuracy on a custom dataset.
+
+---
+
+## Related Work
+
+- [Multi-Objective Feature Selection](https://github.com/royxlead/multi-objective-evolutionary-feature-selection-python) - Evolutionary optimization for feature engineering
+- [Self-Diagnosing Neural Models](https://github.com/royxlead/self-diagnosing-neural-models-python) - Uncertainty estimation in deep learning
+
+---
+
+<div align="center">
+
+**[Portfolio](https://royxlead.netlify.app) · [LinkedIn](https://linkedin.com/in/royxlead) · [ORCID](https://orcid.org/0009-0009-6582-2295)**
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=6366f1&height=80&section=footer" width="100%"/>
+
+</div>
